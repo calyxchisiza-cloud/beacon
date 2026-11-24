@@ -101,3 +101,9 @@ def test_events_are_accepted(client):
     )
     assert accepted.status_code == 202
     assert accepted.json() == {"accepted": 1}
+
+
+def test_home_page(client):
+    page = client.get("/")
+    assert page.status_code == 200
+    assert "Hello" in page.text

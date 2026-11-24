@@ -28,6 +28,7 @@ from app.services import (
     create_sdk_key,
     create_segment,
     list_audit,
+    list_environments,
     list_flags,
     membership,
     update_flag_environment,
@@ -88,6 +89,13 @@ def post_environment(
     db: Session = Depends(get_db),
 ) -> Environment:
     return create_environment(db, user, slug, app_key, body.key, body.name)
+
+
+@router.get("/orgs/{slug}/applications/{app_key}/environments", response_model=list[EnvironmentOut])
+def get_environments(
+    slug: str, app_key: str, user: User = Depends(current_user), db: Session = Depends(get_db)
+) -> list[Environment]:
+    return list_environments(db, user, slug, app_key)
 
 
 @router.post("/orgs/{slug}/applications/{app_key}/environments/{env_key}/keys", response_model=SdkKeyOut, status_code=201)

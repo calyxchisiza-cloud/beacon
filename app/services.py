@@ -247,6 +247,11 @@ def update_flag_environment(
     return row
 
 
+def list_environments(db: Session, user: User, slug: str, app_key: str) -> list[Environment]:
+    _, app = _application(db, user, slug, app_key, "viewer")
+    return list(db.scalars(select(Environment).where(Environment.application_id == app.id).order_by(Environment.key)))
+
+
 def list_flags(db: Session, user: User, slug: str, app_key: str) -> list[FeatureFlag]:
     _, app = _application(db, user, slug, app_key, "viewer")
     return list(db.scalars(select(FeatureFlag).where(FeatureFlag.application_id == app.id).order_by(FeatureFlag.key)))

@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 import sentry_sdk
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 
 from app.cache import cache
 from app.config import get_settings
@@ -23,6 +25,13 @@ app = FastAPI(title="Beacon", version="0.1.0", lifespan=lifespan)
 app.include_router(auth.router)
 app.include_router(manage.router)
 app.include_router(sdk.router)
+
+_page = Path(__file__).parent / "static" / "index.html"
+
+
+@app.get("/")
+def home() -> FileResponse:
+    return FileResponse(_page)
 
 
 @app.get("/health")
